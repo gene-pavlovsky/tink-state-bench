@@ -1,0 +1,5 @@
+-cp src
+-lib tink_state
+-main Main
+-js bin/autobench.js
+-dce full
