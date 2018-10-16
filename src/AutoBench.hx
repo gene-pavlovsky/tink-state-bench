@@ -1,5 +1,6 @@
 package;
 
+import js.Node.*;
 import haxe.Timer;
 import tink.state.*;
 
@@ -20,30 +21,35 @@ class AutoBench {
     }
 
     public function run(sets:Int, reps:Int):Future<Float> {
+        var runs = sets + 2; // 2 extra "dry run" sets
         var totalTime = 0.0;
-        var sum = 0.0;
         var iterations;
+        var sum = 0.0;
+
+        function handle(v:Int)
+            sum += v;
+        for (item in items)
+            item.b.bind({direct: true}, handle);
+
         function iter() {
-            function handle(v:Int) {
-                sum += v;
-            }
             iterations = reps;
-            while (iterations-- > 0) {
-                for (item in items) {
-                    var link = item.b.bind({direct: true}, handle);
+            while (iterations-- > 0)
+                for (item in items)
                     item.a.set(iterations);
-                    link.cancel();
-                }
-            }
         }
+
         function measure(cb) {
-            var startTime = js.Node.process.hrtime();
-            iter();
-            var iterTime = js.Node.process.hrtime(startTime);
-            totalTime += iterTime[0] + iterTime[1] / 1e9;
-            if (--sets == 0) cb(totalTime);
+            if (runs > sets) iter();
+            else {
+                var time = process.hrtime();
+                iter();
+                time = process.hrtime(time);
+                totalTime += time[0] + time[1] * 1e-9;
+            }
+            if (--runs == 0) cb(totalTime / sets);
             else Timer.delay(measure.bind(cb), 0);
         }
+        
         return Future.async(measure);
     }
 
