@@ -1,5 +1,6 @@
 -cp src
 -lib tink_state
+-lib hxnodejs
 -main Main
 -js bin/autobench.js
 -dce full
