@@ -1,0 +1,1 @@
+A very basic benchmark testing the effects of wrapping [tink_state](https://github.com/haxetink/tink_state/) observables in `Observable.auto()`.
