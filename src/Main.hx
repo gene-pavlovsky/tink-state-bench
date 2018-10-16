@@ -24,7 +24,12 @@ class Main {
             bench.run(i.s, i.r)
                 .handle(function (time) {
                     time /= i.s;
-                    trace('observables: ${lpad(i.o, 4)} wrapLevel: ${lpad(i.w, 2)} iterations: ${i.s}x${i.r} avgTime: ${Math.round(time * 1000) / 1000}');
+                    trace([
+                        'observables: ${lpad(i.o, 4)}',
+                        'wrapLevel: ${lpad(i.w, 2)}',
+                        'iterations: ${i.s}x${i.r}',
+                        'avgTime: ${Math.round(time * 1000) / 1000}'
+                    ].join(" "));
                     Timer.delay(run.bind(items), 0);
                 });
         }
